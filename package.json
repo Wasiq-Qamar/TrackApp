@@ -8,6 +8,7 @@
     "eject": "expo eject"
   },
   "dependencies": {
+    "@react-native-async-storage/async-storage": "^1.13.0",
     "@react-native-community/masked-view": "0.1.10",
     "@react-navigation/bottom-tabs": "^5.11.10",
     "@react-navigation/native": "^5.9.4",
@@ -21,10 +22,12 @@
     "react-native-elements": "^3.4.1",
     "react-native-gesture-handler": "~1.10.2",
     "react-native-reanimated": "~2.1.0",
-    "react-native-safe-area-context": "3.2.0",
+    "react-native-safe-area-context": "^3.2.0",
     "react-native-screens": "~3.0.0",
+    "react-native-vector-icons": "^8.1.0",
     "react-native-web": "~0.13.12",
-    "@react-native-async-storage/async-storage": "^1.13.0"
+    "react-native-maps": "0.27.1",
+    "expo-location": "~12.0.4"
   },
   "devDependencies": {
     "@babel/core": "^7.9.0"

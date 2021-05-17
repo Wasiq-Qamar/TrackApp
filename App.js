@@ -1,5 +1,6 @@
-import React from "react";
-import { StyleSheet, Text, View } from "react-native";
+import React, { useEffect, useContext } from "react";
+import { SafeAreaProvider } from "react-native-safe-area-context";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 //  NAVIGATION
 import { NavigationContainer, DefaultTheme } from "@react-navigation/native";
@@ -13,9 +14,12 @@ import SignupScreen from "./src/screens/SignupScreen";
 import TrackCreateScreen from "./src/screens/TrackCreateScreen";
 import TrackDetailScreen from "./src/screens/TrackDetailScreen";
 import TrackListScreen from "./src/screens/TrackListScreen";
+import SplashScreen from "./src/screens/SplashScreen";
 
 //  CONTEXT
 import { Provider as AuthProvider } from "./src/context/AuthContext";
+import { Provider as LocationProvider } from "./src/context/LocationContext";
+import { Context as AuthContext } from "./src/context/AuthContext";
 
 const Stack = createStackNavigator();
 const BottomTab = createBottomTabNavigator();
@@ -48,34 +52,71 @@ const Home = () => {
 };
 
 function App() {
-  // const isLoggedIn = false;
+  const { tryLocalSignin, state } = useContext(AuthContext);
+  let token;
+
+  useEffect(() => {
+    state.isLoading = true;
+    const localSignin = async () => {
+      try {
+        token = await AsyncStorage.getItem("token");
+        if (token) {
+          tryLocalSignin({ token });
+        }
+      } catch (err) {
+        console.log(err);
+      }
+    };
+
+    localSignin();
+  }, []);
+
   return (
-    <NavigationContainer theme={MyTheme}>
-      <Stack.Navigator>
-        <Stack.Screen
-          name="Signup"
-          component={SignupScreen}
-          options={{ headerShown: false }}
-        />
-        <Stack.Screen
-          name="Signin"
-          component={SigninScreen}
-          options={{ headerShown: false }}
-        />
-        <Stack.Screen
-          name="Home"
-          component={Home}
-          options={{ headerShown: false }}
-        />
-      </Stack.Navigator>
-    </NavigationContainer>
+    <SafeAreaProvider>
+      <NavigationContainer theme={MyTheme}>
+        <Stack.Navigator>
+          {state.isLoading ? (
+            <Stack.Screen
+              name="SplashScreen"
+              component={SplashScreen}
+              options={{ headerShown: false }}
+            />
+          ) : (
+            <>
+              {token || state.token ? (
+                <Stack.Screen
+                  name="Home"
+                  component={Home}
+                  options={{ headerShown: false }}
+                />
+              ) : (
+                <>
+                  <Stack.Screen
+                    name="Signin"
+                    component={SigninScreen}
+                    options={{ headerShown: false }}
+                  />
+                  <Stack.Screen
+                    name="Signup"
+                    component={SignupScreen}
+                    options={{ headerShown: false }}
+                  />
+                </>
+              )}
+            </>
+          )}
+        </Stack.Navigator>
+      </NavigationContainer>
+    </SafeAreaProvider>
   );
 }
 
 export default () => {
   return (
-    <AuthProvider>
-      <App />
-    </AuthProvider>
+    <LocationProvider>
+      <AuthProvider>
+        <App />
+      </AuthProvider>
+    </LocationProvider>
   );
 };
