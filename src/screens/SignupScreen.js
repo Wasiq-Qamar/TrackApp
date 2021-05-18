@@ -15,8 +15,6 @@ const SignupScreen = ({ navigation }) => {
     return clearErrors;
   }, [navigation]);
 
-  console.log(state);
-
   return (
     <View style={styles.container}>
       <AuthForm

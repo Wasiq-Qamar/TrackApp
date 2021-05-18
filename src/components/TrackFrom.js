@@ -2,16 +2,18 @@ import React, { useState, useContext } from "react";
 import { Input, Button } from "react-native-elements";
 import Spacer from "./Spacer";
 import { Context as LocationContext } from "../context/LocationContext";
+import useSaveTrack from "../hooks/useSaveTrack";
+import { useNavigation } from "@react-navigation/native";
 
 const TrackForm = () => {
+  const navigation = useNavigation();
   const {
     state: { name, recording, locations },
     startRecording,
     stopRecording,
     changeName,
   } = useContext(LocationContext);
-
-  console.log(locations.length);
+  const [saveTrack] = useSaveTrack();
 
   return (
     <>
@@ -33,6 +35,16 @@ const TrackForm = () => {
         ) : (
           <Button title="Record" onPress={startRecording} />
         )}
+      </Spacer>
+      <Spacer>
+        {!recording && locations.length ? (
+          <Button
+            title="Save Recording"
+            onPress={() => {
+              saveTrack(() => navigation.navigate("TrackList"));
+            }}
+          />
+        ) : null}
       </Spacer>
     </>
   );

@@ -19,7 +19,13 @@ import SplashScreen from "./src/screens/SplashScreen";
 //  CONTEXT
 import { Provider as AuthProvider } from "./src/context/AuthContext";
 import { Provider as LocationProvider } from "./src/context/LocationContext";
+import { Provider as TrackProvider } from "./src/context/TrackContext";
 import { Context as AuthContext } from "./src/context/AuthContext";
+
+//ICONS
+import { Entypo } from "@expo/vector-icons";
+import { Ionicons } from "@expo/vector-icons";
+import { FontAwesome } from "@expo/vector-icons";
 
 const Stack = createStackNavigator();
 const BottomTab = createBottomTabNavigator();
@@ -35,7 +41,11 @@ const MyTheme = {
 const Track = () => {
   return (
     <Stack.Navigator>
-      <Stack.Screen name="TrackList" component={TrackListScreen} />
+      <Stack.Screen
+        name="TrackList"
+        component={TrackListScreen}
+        options={{ title: "Tracks" }}
+      />
       <Stack.Screen name="TrackDetail" component={TrackDetailScreen} />
     </Stack.Navigator>
   );
@@ -43,10 +53,39 @@ const Track = () => {
 
 const Home = () => {
   return (
-    <BottomTab.Navigator headerMode="none">
-      <BottomTab.Screen name="Track" component={Track} />
-      <BottomTab.Screen name="TrackCreate" component={TrackCreateScreen} />
-      <BottomTab.Screen name="Account" component={AccountScreen} />
+    <BottomTab.Navigator
+      headerMode="none"
+      tabBarOptions={{
+        labelStyle: { fontSize: 15 },
+        style: { minHeight: 50, maxHeight: 60 },
+      }}
+    >
+      <BottomTab.Screen
+        name="Track"
+        component={Track}
+        options={{
+          tabBarIcon: () => (
+            <FontAwesome name="th-list" size={24} color="black" />
+          ),
+        }}
+      />
+      <BottomTab.Screen
+        name="TrackCreate"
+        component={TrackCreateScreen}
+        options={{
+          title: "Add Track",
+          tabBarIcon: () => <Entypo name="plus" size={24} />,
+        }}
+      />
+      <BottomTab.Screen
+        name="Account"
+        component={AccountScreen}
+        options={{
+          tabBarIcon: () => (
+            <Ionicons name="settings" size={24} color="black" />
+          ),
+        }}
+      />
     </BottomTab.Navigator>
   );
 };
@@ -113,10 +152,12 @@ function App() {
 
 export default () => {
   return (
-    <LocationProvider>
-      <AuthProvider>
-        <App />
-      </AuthProvider>
-    </LocationProvider>
+    <TrackProvider>
+      <LocationProvider>
+        <AuthProvider>
+          <App />
+        </AuthProvider>
+      </LocationProvider>
+    </TrackProvider>
   );
 };
